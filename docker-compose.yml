@@ -1,0 +1,6 @@
+version: '2'
+services:
+  ping-pong:
+    build: .
+    volumes:
+     - .:/var/log
