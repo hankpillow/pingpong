@@ -1,6 +1,8 @@
 version: '2'
 services:
-  ping-pong:
+  pingpong:
+    image: mrboots/pingpong
     build: .
     volumes:
-     - .:/var/log
+      - ./domains.tmp:/scripts/URLS
+      - ./log:/var/log:rw

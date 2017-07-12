@@ -1,10 +1,10 @@
-FROM alpine
+FROM xordiv/docker-alpine-cron
 
-RUN apk add --update curl bash && rm -rf /var/cache/apk/*
+RUN apk add --update curl \
+    && rm -rf /var/cache/apk/*
 
-RUN mkdir -p /var/ping-pong
-WORKDIR /var/ping-pong
-COPY ping-pong.sh .
+WORKDIR /scripts
 
-COPY domains.txt .
-CMD [ "sh", "ping-pong.sh"]
+COPY ./src/crontabs /etc/cron.d/crontabs
+COPY ./src/format.txt .
+COPY ./src/run.sh .
