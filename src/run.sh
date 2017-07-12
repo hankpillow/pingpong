@@ -48,7 +48,7 @@ else
         if [[ $EXIT_CODE == 0 ]]; then
           echo "$TS $result" >> $TARGET_SUCCESS
         else
-          echo "$TS $EXIT_CODE $site" >> $TARGET_ERROR
+          echo "$TS !$EXIT_CODE $site" >> $TARGET_SUCCESS
         fi
 
         ;;
