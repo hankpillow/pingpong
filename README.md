@@ -4,7 +4,7 @@ my personal "pingdom"
 
 ## setup
 
-* URLS
+### URLS
 
 This container expect a file called **URLS** at **/var** path (container's path)
 
@@ -18,7 +18,7 @@ https://my.projected-page.com username:password
 
 > The user and password is sent to [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
 
-* LOGS
+### LOGS
 
 Pingpong will log cURL activity on **/var/log/pingpong.log** and errors on **/var/log/pingpong.error.log**
 
@@ -34,7 +34,7 @@ All config must be provided via environment variable
 
 ## run
 
-* 1 Make sure you have the URLS file
+1. Make sure you have the URLS file
 
 ```
 echo "http://www.google.com/" > URLS
@@ -43,7 +43,7 @@ mkdir ./log
 
 ```
 
-* 1 start the container as daemon and share the URLS and the log holder as volume
+2. start the container as daemon and share the URLS and the log holder as volume
 
 ```
 docker run -d \
@@ -52,7 +52,7 @@ docker run -d \
    mrboots/pingpong
 ```
 
-* 1 check the activity
+3. check the activity
 
 ```
 tails -f ./log/*
