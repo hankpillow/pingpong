@@ -5,6 +5,6 @@ RUN apk add --update curl \
 
 WORKDIR /scripts
 
-COPY ./src/crontabs /etc/cron.d/crontabs
 COPY ./src/format.txt .
 COPY ./src/run.sh .
+COPY ./src/crontabs /etc/cron.d/crontabs

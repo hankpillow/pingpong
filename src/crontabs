@@ -1,2 +1,2 @@
-* * * * * /bin/sh /scripts/run.sh --follow --append
+* * * * * /bin/sh /scripts/run.sh
 # pingpong
