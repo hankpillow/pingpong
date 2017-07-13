@@ -1,12 +1,33 @@
-version: '2'
+version: '3'
+
 services:
-  pingpong:
-    image: mrboots/pingpong
-    build: .
+
+  core:
+    image: pingpong-core
+
+    build:
+      context: .
+      dockerfile: Dockerfile.core
+
     volumes:
       - ./URLS:/var/URLS
       - ./log:/var/log:rw
+
     environment:
       - FOLLOW_LINKS=1
       - APPEND_LOG=1
       - MAX_TIME=30
+
+  api:
+    image: pingpong-api
+
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+
+    ports:
+      - 8000:8000
+
+    volumes:
+      - ./api/pingpong.py:/pingpong.py
+      - ./log/pingpong.log:/var/DB
