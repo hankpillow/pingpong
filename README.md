@@ -22,6 +22,37 @@ https://my.projected-page.com username:password
 
 Pingpong will log cURL activity on **/var/log/pingpong.log** and errors on **/var/log/pingpong.error.log**
 
+* Success
+
+When cURL exit code 0 (success) the log follow this fields:
+
+```
+(date +%F_%T) %{http_code} %{time_namelookup} %{time_connect} %{time_appconnect} %{time_pretransfer} %{time_redirect} %{time_starttransfer} %{time_total} %{num_redirects} %{url_effective}
+```
+
+Example:
+
+```
+2017-07-14_13:27:01 200 0.002943 0.006507 0.026852 0.026948 0.173054 0.313259 0.486344 1 https://www.facebook.com/
+```
+
+> the timestamp cames from container's clock and request's data from [cURL -w](https://curl.haxx.se/docs/manpage.html#-w)
+
+* Error
+
+When cURL exit code is not 0 (error) the log follow this fields:
+```
+(date +%F_%T) {exit code} {url} {credentials}
+```
+
+Example:
+
+```
+2017-07-13_12:31:01 !6 http://foo.bar/
+```
+
+> the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
+
 ## config
 
 All config must be provided via environment variable
