@@ -1,6 +1,6 @@
 # Pingpong
 
-	1. my personal "pingdom"
+	1. My personal "pingdom"
 
 	2. This project was created to help debuging server availability.
 
@@ -20,27 +20,27 @@ A [jfloff/alpine-python:2.7-slim](https://github.com/jfloff/alpine-python) conta
 
 ## SETUP
 
-### URLS
+### pingpong-core
 
-This container expect a file called **URLS** at **/var** path (container's path)
+This container **expect** a file called **URLS** at **/var/** path (container's path)
+
+#### URLS
 
 The URLS file is a text file containing one url per line. Ex:
 
-```
-http://www.google.com
-#http://this.line.will.be/ignored
-https://my.projected-page.com username:password
-```
+	http://www.google.com
+	#http://this.line.will.be/ignored
+	https://my.projected-page.com username:password
 
-> The user and password is sent to [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
+> The user and password is sent via [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
 
-### LOGS
+#### Log result
 
-Pingpong will log cURL activity on **/var/log/pingpong.log** and errors on **/var/log/pingpong.error.log**
+All logs will be saved at **/var/log/pingpong.log** (container's errors on **/var/log/pingpong.error.log**)
 
 * Success
 
-When cURL exit code 0 (success) the log follow this fields:
+Follow the log format:
 
 ```
 (date +%F_%T) %{http_code} %{time_namelookup} %{time_connect} %{time_appconnect} %{time_pretransfer} %{time_redirect} %{time_starttransfer} %{time_total} %{num_redirects} %{url_effective}
@@ -57,6 +57,7 @@ Example:
 * Error
 
 When cURL exit code is not 0 (error) the log follow this fields:
+
 ```
 (date +%F_%T) !{exit code} {url} {credentials}
 ```
@@ -68,7 +69,7 @@ Example:
 ```
 
 > the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
-> you can check whether the sample is an error or not by the number of columns or testing by **!** on status column.
+> you can check whether a register is an error by the number of columns or testing by **!** on status column.
 
 ----
 
