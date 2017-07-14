@@ -1,8 +1,24 @@
-#pingpong
+# Pingpong
 
-my personal "pingdom"
+	1. my personal "pingdom"
 
-## setup
+	2. This project was created to help debuging server availability.
+
+	3. **It's not designed to be used on production env**
+
+This project is split into 2 parts:
+
+1. **pingpong-core**
+
+A [xordiv/docker-alpine-cron](https://github.com/xordiv/docker-alpine-cron) container (<8mb) that cURLs a list of urls - every minute - and save each result into a new line in a log file
+
+2. **pingpong-api**
+
+A [jfloff/alpine-python:2.7-slim](https://github.com/jfloff/alpine-python) container (<57mb) that can read the **pingpong-core** log and parse it with an API.
+
+----
+
+## SETUP
 
 ### URLS
 
@@ -54,7 +70,11 @@ Example:
 > the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
 > you can check whether the sample is an error or not by the number of columns or testing by **!** on status column.
 
-## config
+----
+
+## CONFIG
+
+### pingpong-core
 
 All config must be provided via environment variable
 
@@ -64,7 +84,15 @@ All config must be provided via environment variable
 
 * `MAX_TIME` - default `10`. Define the request's timeout. [@see cURL --max-time](https://curl.haxx.se/docs/manpage.html#-m)
 
-## run
+### pingpong-api
+
+TBD
+
+----
+
+## RUN
+
+### pingpong-core
 
 1. Make sure you have the URLS file
 
@@ -89,6 +117,12 @@ docker run -d \
 ```
 tails -f ./log/*
 ```
+
+### pingpong-api
+
+TBD
+
+---
 
 ### TODO
 
