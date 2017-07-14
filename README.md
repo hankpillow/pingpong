@@ -42,7 +42,7 @@ Example:
 
 When cURL exit code is not 0 (error) the log follow this fields:
 ```
-(date +%F_%T) {exit code} {url} {credentials}
+(date +%F_%T) !{exit code} {url} {credentials}
 ```
 
 Example:
@@ -52,6 +52,7 @@ Example:
 ```
 
 > the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
+> you can check whether the sample is an error or not by the number of columns or testing by **!** on status column.
 
 ## config
 
