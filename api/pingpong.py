@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta
+
 import falcon
 import json
 import logging
@@ -9,30 +10,40 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 DEFAULT_HOST = ""
+DEFAULT_TIME = timedelta(minutes=15)
 DATE_TEMPLATE = "%Y-%m-%d_%H:%M:%S"
 
 LOGGER = logging.getLogger('[pingpong]')
 
-TIME = {
-    "now": timedelta(minutes=30),
-    "6h": timedelta(hours=6),
-    "12h": timedelta(hours=12),
-    "today": timedelta(days=1),
-    "last_week": timedelta(days=7),
-    "last_month": timedelta(days=30),
-    "last_year": timedelta(days=365)
-}
+def get_timedelta(type, num):
+    """return a timedelta format for given date"""
+
+    if type == "m":
+        return timedelta(minutes=num)
+
+    if type == "h":
+        return timedelta(hours=num)
+
+    return timedelta(days=num)
 
 def sanitize_data(req, resp, resource, params):
     """normalize params before parsing db"""
 
     try:
-        params["start_date"] = TIME.get(params.get("start_date"), "now")
+        date = "start_date"
         params["host"] = req.get_param("host", default=DEFAULT_HOST)
+
+        result = re.match(r"(\d{1,})(m|h|d)", params[date])
+
+        """no match, no query"""
+        if not result:
+            raise Exception("invalid time format")
+
+        params[date] = get_timedelta(result.group(2), int(result.group(1)))
 
     except Exception as error:
         LOGGER.error(error)
-        raise falcon.HTTPError(falcon.HTTP_400, 'unexpected path')
+        raise falcon.HTTPError(falcon.HTTP_400, str(error))
 
 def format_sample(arr):
     """format arr into curl sample"""
@@ -55,7 +66,7 @@ def format_sample(arr):
 
     except Exception as error:
         LOGGER.warning('malformed sample line: {0}'.format(arr.join(' ')))
-        LOGGER.error(error)
+        LOGGER.error(str(error))
         return None
 
 def format_error(arr):
@@ -72,7 +83,7 @@ def format_error(arr):
 
     except Exception as error:
         LOGGER.warning('malformed error line: {0}'.format(arr.join(' ')))
-        LOGGER.error(error)
+        LOGGER.error(str(error))
         return None
 
 def parse_line(info):
@@ -85,13 +96,15 @@ def parse_line(info):
     size = len(chunks)
 
     if size == 11:
+        """success line"""
         return format_sample(chunks)
 
     elif size == 3 or size == 4:
+        """error line"""
         return format_error(chunks)
 
     else:
-        LOGGER.warning('unexpected line format. size:{0} line:{1}'.format(size, info))
+        LOGGER.warning('unexpected line format. size:{0} line:>{1}<'.format(size, info))
         return None
 
 class PingPong(object):
@@ -100,7 +113,7 @@ class PingPong(object):
         def on_get(self, req, resp, start_date, host):
 
             """Handles GET requests"""
-            LOGGER.info('querying back {0} for host:{1}'.format(str(start_date), host))
+            LOGGER.info('querying back {0} and filter by host:>{1}<'.format(str(start_date), host))
 
             data = []
             min_date = datetime.now() - start_date
@@ -125,9 +138,9 @@ class PingPong(object):
 
             except Exception as error:
                 LOGGER.error(error)
-                raise falcon.HTTPError(falcon.HTTP_400, 'invalid DB')
+                raise falcon.HTTPError(falcon.HTTP_400, str(error))
 
-            LOGGER.info('got {0} results.'.format(len(data)))
+            LOGGER.info('got {0} results'.format(len(data)))
             resp.body = json.dumps(data)
 
 """ webserver init """
