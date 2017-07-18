@@ -4,3 +4,4 @@ log/
 URLS
 node_modules/
 **/*.bundle.*
+.vscode

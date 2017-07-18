@@ -147,7 +147,7 @@ class View(object):
     def on_get(self, req, resp):
         """detault page. all js"""
         resp.content_type = "text/html"
-        resp.body = '<html><body data-api="/api"></body><script></script></html>'
+        resp.body = '<html><body>foo</body></html>'
 
 class CorsMiddleware(object):
 	def process_request(self, request, response):
