@@ -3,4 +3,4 @@
 log/
 URLS
 node_modules/
-app/*.bundle*
+**/*.bundle.*

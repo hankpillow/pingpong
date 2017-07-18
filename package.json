@@ -7,14 +7,17 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
-    "build:dev": "yarn run build -- -w"
+    "dev": "yarn run build -- -w"
   },
   "dependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "preact": "^8.2.1",
+    "preact-redux": "^2.0.2",
+    "redux": "^3.7.2",
     "webpack": "^3.2.0"
   }
 }

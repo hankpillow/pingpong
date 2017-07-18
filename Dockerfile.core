@@ -3,8 +3,9 @@ FROM xordiv/docker-alpine-cron
 RUN apk add --update curl \
     && rm -rf /var/cache/apk/*
 
+RUN echo "http://www.docker.com" > /var/URLS
+
 WORKDIR /scripts
 
 COPY ./core/format.txt .
 COPY ./core/run.sh .
-COPY ./core/crontabs /etc/cron.d/crontabs

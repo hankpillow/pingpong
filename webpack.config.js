@@ -9,7 +9,7 @@ module.exports = {
 
 	//output
 	output: {
-		path: path.join(__dirname + '/app'),
+		path: path.join(__dirname + '/api'),
 		filename: 'app.bundle.js'
 	},
 
@@ -22,6 +22,7 @@ module.exports = {
 				options: {
 					presets: ['env'],
 					plugins: [
+						["transform-object-rest-spread"],
 						['transform-react-jsx', {pragma: 'h'}]
 					]
 				}

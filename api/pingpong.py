@@ -143,10 +143,22 @@ class PingPong(object):
             LOGGER.info('got {0} results'.format(len(data)))
             resp.body = json.dumps(data)
 
-""" webserver init """
-handler = PingPong()
+class View(object):
+    def on_get(self, req, resp):
+        """detault page. all js"""
+        resp.content_type = "text/html"
+        resp.body = '<html><body data-api="/api"></body><script></script></html>'
 
-api = falcon.API()
-api.add_route('/api/', handler)
-api.add_route('/api/{start_date}', handler)
+class CorsMiddleware(object):
+	def process_request(self, request, response):
+		"""personal project, why not?!"""
+		response.set_header('Access-Control-Allow-Origin', '*')
+
+""" webserver init """
+data = PingPong()
+view = View()
+
+api = falcon.API(middleware=[CorsMiddleware()])
+api.add_route('/', view)
+api.add_route('/api/{start_date}', data)
 
