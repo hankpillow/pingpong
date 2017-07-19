@@ -10,7 +10,7 @@ const TimeRequest = ({status, load}) => {
 	}
 
 	return (
-		<form className="{status}" disabled={status != ST.READY ? 'disabled' : ''} action="//localhost:8000/api/">
+		<form className="{status}" disabled={status != ST.READY ? 'disabled' : ''} action="/api/">
 			<label>
 				<select onChange={getSelected}>
 					<option value="">Select the range you want to inspect</option>
