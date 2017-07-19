@@ -4,7 +4,7 @@ import {actions} from '../store'
 
 const Status = ({status}) => {
 	return (
-		<h1>{status}</h1>
+		<div><span>{status}</span></div>
 	)
 }
 

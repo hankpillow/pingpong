@@ -1,20 +1,31 @@
+// libs
 import {h, render} from 'preact'
 import {Provider} from 'preact-redux'
 import thunk from 'redux-thunk'
-import {createStore, applyMiddleware} from 'redux'
-import reducer from './store'
-import APIRequest from './components/APIRequest'
-import Status from './components/Status'
+import {createStore, applyMiddleware, compose} from 'redux'
 
-const store = createStore(
-	reducer, {},
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
+// app
+import {reducer} from './store'
+
+// components
+import Select from './components/Select'
+import Status from './components/Status'
+import Dashboard from './components/Dashboard'
+
+const middleware = window.__REDUX_DEVTOOLS_EXTENSION__ ?
+			compose(applyMiddleware(thunk), window.__REDUX_DEVTOOLS_EXTENSION__()) :
+			applyMiddleware(thunk)
+
+const store = createStore(reducer, {}, middleware)
 
 render(
 	<Provider store={store}>
 		<main>
-			<header><Status /> <APIRequest /> </header>
+			<Status />
+			<Select />
+			<div>
+				<Dashboard />
+			</div>
 		</main>
 	</Provider>
 , document.body)
