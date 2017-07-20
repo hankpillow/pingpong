@@ -23,9 +23,7 @@ render(
 		<main>
 			<Status />
 			<Select />
-			<div>
-				<Dashboard />
-			</div>
+			<Dashboard />
 		</main>
 	</Provider>
 , document.body)

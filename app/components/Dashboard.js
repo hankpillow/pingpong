@@ -1,24 +1,37 @@
 import {h} from 'preact'
 import {connect} from 'preact-redux'
 import {actions} from '../store'
-import Row from './Row'
+import Panel from './Panel'
 
 const Dashboard = ({data}) => {
 	data = data || []
 
-	const hosts = data.reduce((result, item) => {
-		if (result.indexOf(item.host) === -1){
-			result.push(item.host)
-		}
-		return result
-	}, [])
-	console.log(data)
-	console.log(hosts)
+	const splitInPages = list => {
+		return list.reduce((result, item) => {
+			if (!result[item.url]) {
+				result[item.url] = []
+			}
+			result[item.url].push(item)
+			return result
+		}, {})
+	}
 
+	const sortByDate = list => {
+		return list.sort((a, b) => {
+			if(a.date < b.date) return -1;
+			if(a.date > b.date) return 1;
+			return 0;
+		})
+	}
+
+	const panes = splitInPages(data)
 	return (
-		<h1>{hosts.join(' - ')}</h1>
+			<div className={'dashboard'}>
+				{Object.keys(panes).map(name => {
+					return <Panel name={name} data={sortByDate(panes[name])}/>
+				})}
+			</div>
 	)
 }
 
 export default connect(state => ({data:state.data}), actions)(Dashboard)
-			// return <Row index={index} data={item}/>
