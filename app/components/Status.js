@@ -1,6 +1,6 @@
 import {h} from 'preact'
 import {connect} from 'preact-redux'
-import {actions} from '../store'
+import {actions} from 'modules/store'
 
 const Status = ({status}) => {
 	return (

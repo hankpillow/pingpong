@@ -9,17 +9,20 @@ module.exports = function(env) {
 
 	let config = {
 
-		entry: { main: './app' },
+		entry: {
+			app: './app'
+		},
 
 		output: {
-			path: path.join(__dirname + '/api'),
-			filename: 'app.bundle.js'
+			path: path.join(__dirname + '/app'),
+			filename: '[name].bundle.js'
 		},
 
 		resolve: {
 			modules: ['node_modules'],
 			alias: {
-				root: path.resolve(__dirname + '/api')
+				root: path.resolve(__dirname + '/app'),
+				modules: path.resolve(__dirname + '/app/modules')
 			}
 		},
 

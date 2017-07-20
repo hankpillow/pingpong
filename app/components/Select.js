@@ -1,6 +1,6 @@
 import {h} from 'preact'
 import {connect} from 'preact-redux'
-import {actions, status as ST} from '../store'
+import {actions, status as ST} from 'modules/store'
 
 const TimeRequest = ({status, load}) => {
 
