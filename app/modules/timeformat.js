@@ -1,3 +1,5 @@
+//@see https://stackoverflow.com/questions/1551382/user-friendly-time-format-in-python
+//TODO allow int as args
 const timeformat = (time, now = new Date()) => {
 
 		let diff = now

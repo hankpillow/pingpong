@@ -8,17 +8,29 @@
   "scripts": {
     "test": "ava",
     "prebuild": "npm test",
+    "precommit":"npm test",
+    "preversion":"git pull --tags",
+    "version": "npm run build",
+    "portversion":"git push origin --tags",
     "build": "webpack --env=production",
     "dev": "webpack-dev-server --hot --inline --env=development"
   },
   "ava": {
-    "require": ["babel-register"],
-    "files": ["app/test.js"]
+    "require": [
+      "babel-register"
+    ],
+    "files": [
+      "app/test.js"
+    ]
   },
   "babel": {
-    "presets": ["env"],
-    "plugins": ["transform-object-rest-spread"]
- },
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  },
   "dependencies": {
     "ava": "^0.21.0",
     "babel-core": "^6.25.0",
@@ -26,6 +38,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.0",
+    "husky": "^0.14.3",
     "preact": "^8.2.1",
     "preact-redux": "^2.0.2",
     "redux": "^3.7.2",
