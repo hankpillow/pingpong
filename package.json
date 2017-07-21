@@ -1,12 +1,12 @@
 {
   "name": "ping-pong",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "repository": "git@github.com:hankpillow/pingpong.git",
   "author": "Igor Almeida <igor.p.almeida@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "ava",
+    "test": "ava --tap",
     "prebuild": "npm test",
     "precommit":"npm test",
     "preversion":"git pull --tags",
