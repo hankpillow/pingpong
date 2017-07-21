@@ -1,5 +1,6 @@
 import test from 'ava';
 import timeformat from './modules/timeformat'
+import * as insights from './modules/insights'
 
 const zero = new Date('2017-07-20 15:30:00')
 
@@ -74,4 +75,46 @@ test('timeformat "N years ago"', t => {
 	const msg = 'when time diff >365d'
 	t.is(timeformat(new Date('2016-07-20 15:30:00'), zero), '1 years ago', msg)
 	t.is(timeformat(new Date('2015-07-20 15:30:00'), zero), '2 years ago', msg)
+})
+
+test('insight sample type', t => {
+	const data = [{type:'sample',url:'j'},{type:'sample',url:'a'},{type:'error',url:'b'}]
+	t.is(insights.filterError(data).length, 1, 'should handle error')
+	t.is(insights.filterSample(data).length, 2, 'should handle sample')
+})
+
+test('insight median values', t => {
+	const data = [
+		{type:'sample',url:'j', a:10, b:-10},
+		{type:'sample',url:'a', a:20, b:10},
+		{type:'error',url:'b'}
+	]
+	t.is(insights.getMedian('a', insights.filterSample(data)), 15, 'handle avg values from given prop name')
+	t.is(insights.getMedian('b', insights.filterSample(data)), 0, 'handle avg values from given prop name')
+})
+
+test('insight uptime and downtime', t => {
+	const data = [
+		{type:'sample',url:'j', http_code:200},
+		{type:'sample',url:'a', http_code:300},
+		{type:'sample',url:'a', http_code:302},
+		{type:'sample',url:'c', http_code:400},
+		{type:'sample',url:'d', http_code:500},
+		{type:'error',url:'b'}
+	]
+	t.is(insights.getUptime(insights.filterSample(data)), 0.6, 'handle http_code 2xx and 3xx and return the mean')
+	t.is(insights.getDowntime(insights.filterSample(data)), 0.4, 'handle http_code 4xx and 5xx and return the mean')
+})
+
+test('insight faster and slower', t => {
+	const data = [
+		{type:'sample',url:'j', b:200},
+		{type:'sample',url:'a', b:300},
+		{type:'sample',url:'a', b:302},
+		{type:'sample',url:'c', b:400},
+		{type:'sample',url:'d', b:500},
+		{type:'error',url:'b'}
+	]
+	t.is(insights.getFaster('b', insights.filterSample(data)), 200, 'handle returning the lower value from list')
+	t.is(insights.getSlower('b', insights.filterSample(data)), 500, 'handle returning the higher value from list')
 })
