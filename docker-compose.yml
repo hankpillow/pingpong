@@ -23,7 +23,7 @@ services:
     environment:
       - CRON_STRINGS=*/10 * * * * /bin/sh /scripts/run.sh
 
-  api:
+  api.local:
     image: pingpong-api
     build:
       context: .

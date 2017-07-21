@@ -3,7 +3,7 @@ const timeformat = (time, now = new Date()) => {
 		let diff = now
 
 		try {
-			if (typeof time === 'string' && isNaN(Data.parse(time)) === false) {
+			if (typeof time === 'string' && isNaN(Date.parse(time)) === false) {
 					diff = now - new Date(time)
 			} else if (time instanceof Date) {
 					diff = now - time
