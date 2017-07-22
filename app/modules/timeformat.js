@@ -1,6 +1,8 @@
+import R from 'ramda'
+
 //@see https://stackoverflow.com/questions/1551382/user-friendly-time-format-in-python
 //TODO allow int as args
-const timeformat = (time, now = new Date()) => {
+const pretty = (time, now = new Date()) => {
 
 		let diff = now
 
@@ -50,4 +52,9 @@ const timeformat = (time, now = new Date()) => {
     return parseInt(day_diff / 365, 10) + " years ago"
 }
 
-export default timeformat
+const WEEK_DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
+const tinyDate = R.map(date =>  {
+return `${WEEK_DAYS[date.getDay()]}${date.getDate()} ${date.getFullYear()}`
+})
+
+export {pretty, tinyDate}

@@ -31,14 +31,19 @@ const getFaster = (prop, list) => sortByProp(prop)(list)[0]
 /* return higher value from list */
 const getSlower = (prop, list) => sortByProp(prop)(list)[list.length-1]
 
-export {
-	sortByProp,
-	getSlower,
-	getFaster,
-	getDowntime,
-	getUptime,
-	getMedian,
-	filterError,
-	filterSample
-}
+const pluckDates = R.compose(R.filter(date => Date.parse(date)),R.pluck('date'))
 
+const toDate = R.compose(R.map(date => new Date(date)),pluckDates)
+
+export {
+sortByProp,
+getSlower,
+getFaster,
+getDowntime,
+getUptime,
+getMedian,
+filterError,
+filterSample,
+pluckDates,
+toDate,
+}

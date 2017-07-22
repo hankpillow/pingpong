@@ -1,80 +1,104 @@
 import test from 'ava';
-import timeformat from './modules/timeformat'
+import * as timeformat from './modules/timeformat'
 import * as insights from './modules/insights'
 
 const zero = new Date('2017-07-20 15:30:00')
 
-test('timeformat should handle invalid params', t => {
+test('timeformat.pretty should handle invalid params', t => {
 	const msg =  'should return empty string for invalid args'
-	t.is(timeformat(1),'', msg)
-	t.is(timeformat('foo'), '', msg)
-	t.is(timeformat(false), '', msg)
+	t.is(timeformat.pretty(1),'', msg)
+	t.is(timeformat.pretty('foo'), '', msg)
+	t.is(timeformat.pretty(false), '', msg)
 })
 
-test('timeformat "just now"', t => {
+test('timeformat.pretty "just now"', t => {
 	const msg = 'when time diff < 10s'
-	t.is(timeformat(zero, zero),'just now', msg)
-	t.is(timeformat(new Date('2017-07-20 15:29:59'), zero), 'just now', msg)
+	t.is(timeformat.pretty(zero, zero),'just now', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:29:59'), zero), 'just now', msg)
 })
 
-test('timeformat "N seconds ago"', t => {
+test('timeformat.pretty "N seconds ago"', t => {
 	const msg = 'when time diff <60s'
-	t.is(timeformat(new Date('2017-07-20 15:29:50'), zero), '10 seconds ago', msg)
-	t.is(timeformat(new Date('2017-07-20 15:29:01'), zero), '59 seconds ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:29:50'), zero), '10 seconds ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:29:01'), zero), '59 seconds ago', msg)
 })
 
-test('timeformat "a minute ago"', t => {
+test('timeformat.pretty "a minute ago"', t => {
 	const msg = 'when time diff <120s'
-	t.is(timeformat(new Date('2017-07-20 15:29:00'), zero), 'a minute ago', msg)
-	t.is(timeformat(new Date('2017-07-20 15:28:59'), zero), 'a minute ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:29:00'), zero), 'a minute ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:28:59'), zero), 'a minute ago', msg)
 })
 
-test('timeformat "N minutes ago"', t => {
+test('timeformat.pretty "N minutes ago"', t => {
 	const msg = 'when time diff <3600s'
-	t.is(timeformat(new Date('2017-07-20 15:28:00'), zero), '2 minutes ago', msg)
-	t.is(timeformat(new Date('2017-07-20 14:30:01'), zero), '59 minutes ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 15:28:00'), zero), '2 minutes ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 14:30:01'), zero), '59 minutes ago', msg)
 })
 
-test('timeformat "a hour ago"', t => {
+test('timeformat.pretty "a hour ago"', t => {
 	const msg = 'when time diff <7200s'
-	t.is(timeformat(new Date('2017-07-20 14:30:00'), zero), 'an hour ago', msg)
-	t.is(timeformat(new Date('2017-07-20 13:30:01'), zero), 'an hour ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 14:30:00'), zero), 'an hour ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 13:30:01'), zero), 'an hour ago', msg)
 })
 
-test('timeformat "N hours ago"', t => {
+test('timeformat.pretty "N hours ago"', t => {
 	const msg = 'when time diff <86400s'
-	t.is(timeformat(new Date('2017-07-20 13:29:59'), zero), '2 hours ago', msg)
-	t.is(timeformat(new Date('2017-07-19 15:30:01'), zero), '23 hours ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-20 13:29:59'), zero), '2 hours ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-19 15:30:01'), zero), '23 hours ago', msg)
 })
 
-test('timeformat "yesterday"', t => {
+test('timeformat.pretty "yesterday"', t => {
 	const msg = 'when time diff <2d'
-	t.is(timeformat(new Date('2017-07-19 15:30:00'), zero), 'yesterday', msg)
-	t.is(timeformat(new Date('2017-07-18 15:30:01'), zero), 'yesterday', msg)
+	t.is(timeformat.pretty(new Date('2017-07-19 15:30:00'), zero), 'yesterday', msg)
+	t.is(timeformat.pretty(new Date('2017-07-18 15:30:01'), zero), 'yesterday', msg)
 })
 
-test('timeformat "N days ago"', t => {
+test('timeformat.pretty "N days ago"', t => {
 	const msg = 'when time diff <7d'
-	t.is(timeformat(new Date('2017-07-18 15:30:00'), zero), '2 days ago', msg)
-	t.is(timeformat(new Date('2017-07-13 15:30:01'), zero), '6 days ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-18 15:30:00'), zero), '2 days ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-13 15:30:01'), zero), '6 days ago', msg)
 })
 
-test('timeformat "N weeks ago"', t => {
+test('timeformat.pretty "N weeks ago"', t => {
 	const msg = 'when time diff <31d'
-	t.is(timeformat(new Date('2017-07-13 15:30:00'), zero), '1 weeks ago', msg)
-	t.is(timeformat(new Date('2017-06-19 15:30:01'), zero), '4 weeks ago', msg)
+	t.is(timeformat.pretty(new Date('2017-07-13 15:30:00'), zero), '1 weeks ago', msg)
+	t.is(timeformat.pretty(new Date('2017-06-19 15:30:01'), zero), '4 weeks ago', msg)
 })
 
-test('timeformat "N months ago"', t => {
+test('timeformat.pretty "N months ago"', t => {
 	const msg = 'when time diff <365d'
-	t.is(timeformat(new Date('2017-06-19 15:30:00'), zero), '1 months ago', msg)
-	t.is(timeformat(new Date('2016-07-20 15:30:01'), zero), '12 months ago', msg)
+	t.is(timeformat.pretty(new Date('2017-06-19 15:30:00'), zero), '1 months ago', msg)
+	t.is(timeformat.pretty(new Date('2016-07-20 15:30:01'), zero), '12 months ago', msg)
 })
 
-test('timeformat "N years ago"', t => {
+test('timeformat.pretty "N years ago"', t => {
 	const msg = 'when time diff >365d'
-	t.is(timeformat(new Date('2016-07-20 15:30:00'), zero), '1 years ago', msg)
-	t.is(timeformat(new Date('2015-07-20 15:30:00'), zero), '2 years ago', msg)
+	t.is(timeformat.pretty(new Date('2016-07-20 15:30:00'), zero), '1 years ago', msg)
+	t.is(timeformat.pretty(new Date('2015-07-20 15:30:00'), zero), '2 years ago', msg)
+})
+
+test('tiny date', t => {
+	const data = [
+		new Date('2017-07-20 13:30:01'),
+		new Date('2017-07-21 13:30:01'),
+		new Date('2017-07-22 13:30:01'),
+		new Date('2017-07-23 13:30:01'),
+		new Date('2017-07-24 13:30:01'),
+		new Date('2017-07-25 13:30:01'),
+		new Date('2017-07-26 13:30:01'),
+		new Date('2017-07-27 13:30:01'),
+	]
+	const expected = [
+		'Th20 2017',
+		'Fr21 2017',
+		'Sa22 2017',
+		'Su23 2017',
+		'Mo24 2017',
+		'Tu25 2017',
+		'We26 2017',
+		'Th27 2017'
+	]
+	t.deepEqual(timeformat.tinyDate(data), expected , 'must parse all dates')
 })
 
 test('insight sample type', t => {
@@ -118,3 +142,18 @@ test('insight faster and slower', t => {
 	t.is(insights.getFaster('b', insights.filterSample(data)), 200, 'handle returning the lower value from list')
 	t.is(insights.getSlower('b', insights.filterSample(data)), 500, 'handle returning the higher value from list')
 })
+
+test('insights date utils', t => {
+	const data = [
+		{date:'2017-07-22 13:30:01'},
+		{date:'"2017-07-22 13:30:01"'},
+		{date:''},
+		{date:{}},
+		{date:false},
+		{datx:'error',url:'b'}
+	]
+
+	t.is(insights.pluckDates(data).length, 1, 'extract dates from samples')
+	t.is(insights.toDate(data).length, 1, 'return a list of Date objects')
+})
+
