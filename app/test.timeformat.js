@@ -1,6 +1,5 @@
 import test from 'ava';
 import * as timeformat from './modules/timeformat'
-import * as insights from './modules/insights'
 
 const zero = new Date('2017-07-20 15:30:00')
 
@@ -77,7 +76,7 @@ test('timeformat.pretty "N years ago"', t => {
 	t.is(timeformat.pretty(new Date('2015-07-20 15:30:00'), zero), '2 years ago', msg)
 })
 
-test('tiny date', t => {
+test('timeformat.tinyDate', t => {
 	const data = [
 		new Date('2017-07-20 13:30:01'),
 		new Date('2017-07-21 13:30:01'),
@@ -98,62 +97,6 @@ test('tiny date', t => {
 		'We26 2017',
 		'Th27 2017'
 	]
+	t.deepEqual(timeformat.tinyDate(data).length, expected.length , 'must parse all dates')
 	t.deepEqual(timeformat.tinyDate(data), expected , 'must parse all dates')
 })
-
-test('insight sample type', t => {
-	const data = [{type:'sample',url:'j'},{type:'sample',url:'a'},{type:'error',url:'b'}]
-	t.is(insights.filterError(data).length, 1, 'should handle error')
-	t.is(insights.filterSample(data).length, 2, 'should handle sample')
-})
-
-test('insight median values', t => {
-	const data = [
-		{type:'sample',url:'j', a:10, b:-10},
-		{type:'sample',url:'a', a:20, b:10},
-		{type:'error',url:'b'}
-	]
-	t.is(insights.getMedian('a', insights.filterSample(data)), 15, 'handle avg values from given prop name')
-	t.is(insights.getMedian('b', insights.filterSample(data)), 0, 'handle avg values from given prop name')
-})
-
-test('insight uptime and downtime', t => {
-	const data = [
-		{type:'sample',url:'j', http_code:200},
-		{type:'sample',url:'a', http_code:300},
-		{type:'sample',url:'a', http_code:302},
-		{type:'sample',url:'c', http_code:400},
-		{type:'sample',url:'d', http_code:500},
-		{type:'error',url:'b'}
-	]
-	t.is(insights.getUptime(insights.filterSample(data)), 0.6, 'handle http_code 2xx and 3xx and return the mean')
-	t.is(insights.getDowntime(insights.filterSample(data)), 0.4, 'handle http_code 4xx and 5xx and return the mean')
-})
-
-test('insight faster and slower', t => {
-	const data = [
-		{type:'sample',url:'j', b:200},
-		{type:'sample',url:'a', b:300},
-		{type:'sample',url:'a', b:302},
-		{type:'sample',url:'c', b:400},
-		{type:'sample',url:'d', b:500},
-		{type:'error',url:'b'}
-	]
-	t.is(insights.getFaster('b', insights.filterSample(data)), 200, 'handle returning the lower value from list')
-	t.is(insights.getSlower('b', insights.filterSample(data)), 500, 'handle returning the higher value from list')
-})
-
-test('insights date utils', t => {
-	const data = [
-		{date:'2017-07-22 13:30:01'},
-		{date:'"2017-07-22 13:30:01"'},
-		{date:''},
-		{date:{}},
-		{date:false},
-		{datx:'error',url:'b'}
-	]
-
-	t.is(insights.pluckDates(data).length, 1, 'extract dates from samples')
-	t.is(insights.toDate(data).length, 1, 'return a list of Date objects')
-})
-

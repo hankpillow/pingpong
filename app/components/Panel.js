@@ -1,6 +1,6 @@
 import url from 'url'
 import {h} from 'preact'
-import timeformat from 'modules/timeformat'
+import {tinyDate, pretty} from 'modules/timeformat'
 import * as insights from 'modules/insights'
 
 const Panel = ({name, data}) => {
@@ -19,8 +19,8 @@ const Panel = ({name, data}) => {
 				<span>{u.path || '' + u.query || ''}</span>
 			</h2>
 			<sup>
-				<time datetime={first.date}>{timeformat(first.date)}</time> to
-				<time datetime={last.date}>{timeformat(last.date)} </time>
+				<time datetime={first.date}>{pretty(first.date)}</time> to
+				<time datetime={last.date}>{pretty(last.date)} </time>
 			</sup>
 			<ul>
 				<li>uptime: {parseInt(uptime * 100)}%</li>
@@ -29,9 +29,8 @@ const Panel = ({name, data}) => {
 			</ul>
 			<div className={'uptime-chcks'}>
 				<span>uptime checks:</span>
-				<ol>
-					<li></li>
-				</ol>
+				<span>{samples[0].date}</span>
+			</div>
 		</div>
 	)
 }

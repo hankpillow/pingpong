@@ -54,7 +54,8 @@ const pretty = (time, now = new Date()) => {
 
 const WEEK_DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 const tinyDate = R.map(date =>  {
-return `${WEEK_DAYS[date.getDay()]}${date.getDate()} ${date.getFullYear()}`
+	if (!date) return ''
+	return `${WEEK_DAYS[date.getDay()]}${date.getDate()} ${date.getFullYear()}`
 })
 
 export {pretty, tinyDate}
