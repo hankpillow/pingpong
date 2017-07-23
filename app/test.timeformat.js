@@ -100,3 +100,26 @@ test('timeformat.tinyDate', t => {
 	t.deepEqual(timeformat.tinyDate(data).length, expected.length , 'must parse all dates')
 	t.deepEqual(timeformat.tinyDate(data), expected , 'must parse all dates')
 })
+
+test('timeformat.getWeekNumber', t => {
+	// https://www.epochconverter.com/weeks/2017
+	// every item represets index+1 week for that year
+	const weeks = [
+		"January 2, 2017","January 9, 2017", "January 16, 2017", "January 23, 2017", "January 30, 2017",
+		"February 6, 2017", "February 13, 2017", "February 20, 2017", "February 27, 2017",
+		"March 6, 2017", "March 13, 2017", "March 20, 2017", "March 27, 2017",
+		"April 3, 2017", "April 10, 2017", "April 17, 2017", "April 24, 2017",
+		"May 1, 2017", "May 8, 2017", "May 15, 2017", "May 22, 2017", "May 29, 2017",
+		"June 5, 2017", "June 12, 2017", "June 19, 2017", "June 26, 2017",
+		"July 3, 2017", "July 10, 2017", "July 17, 2017", "July 24, 2017", "July 31, 2017",
+		"August 7, 2017", "August 14, 2017", "August 21, 2017", "August 28, 2017",
+		"September 4, 2017", "September 11, 2017", "September 18, 2017", "September 25, 2017",
+		"October 2, 2017", "October 9, 2017", "October 16, 2017", "October 23, 2017", "October 30, 2017",
+		"November 6, 2017", "November 13, 2017", "November 20, 2017", "November 27, 2017",
+		"December 4, 2017", "December 11, 2017", "December 18, 2017", "December 25, 2017",
+	]
+	weeks.forEach((d,weekNum) => {
+		t.is(timeformat.getWeekNumber(new Date(d)), weekNum+1, 'week must match:' + d)
+	})
+})
+

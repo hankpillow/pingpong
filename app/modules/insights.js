@@ -1,4 +1,5 @@
 import R from 'ramda'
+import {getWeekNumber} from './timeformat'
 
 /* return item.type==error from <list>*/
 const filterProp = (prop) => R.filter(R.has(prop))
@@ -27,36 +28,45 @@ const getUptime = meanHttpCode(/^(2|3)\d{2}$/i)
 const getDowntime = meanHttpCode(/^(4|5)\d{2}$/i)
 
 /* return sorted list with only <prop> by <fn> */
-const sortByProp = (prop, fn = (a,b) => a > b) => R.compose(R.sort(fn), filterProp(prop), R.clone)
+const sortByProp = (prop, fn = (a,b) => a > b) => R.compose(R.sort(fn), filterProp(prop))
 
 /* return lower value from list */
-const getFaster = (prop, list) => R.compose(R.take(1), sortByProp(prop), R.clone)(list)[0]
+const getFaster = (prop, list) => R.compose(R.take(1), sortByProp(prop))(list)[0]
 
 /* return higher value from list */
-const getSlower = (prop, list) => R.compose(R.takeLast(1), sortByProp(prop), R.clone)(list)[0]
+const getSlower = (prop, list) => R.compose(R.takeLast(1), sortByProp(prop))(list)[0]
 
-const pluck = (prop, list) => R.compose(R.pluck(prop), R.clone)(list)
+/* return list of values from <prop> */
+const pluck = (prop, list) => R.pluck(prop)(list)
 
+/* convert 'date' prop value into Date instance */
 const toDate = R.compose(
-	R.filter(R.propIs(Date,'date')),
-	R.map(item => {
-		const t = Date.parse(item.date)
-		const date = !isNaN(t) ? new Date(item.date) : null
-		return {...item, date}
-	}),
+	R.map(item => {return {...item, date:new Date(item.date)}}),
+	R.filter(item => !isNaN(Date.parse(item.date))),
 	R.filter(R.propIs(String, 'date')),
 	filterProp('date')
 )
 
+const ADD_DAY = date => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+const ADD_WEEK = date => `${date.getFullYear()}-W${getWeekNumber(date)}`
+
+const addGroup = (groupReducer) => R.map(item => { return {...item, groupBy: groupReducer(item.date)} })
+
+const groupByDay = R.compose(R.groupWith(R.eqProps('groupBy')), addGroup(ADD_DAY))
+const groupByWeek = R.compose(R.groupWith(R.eqProps('groupBy')), addGroup(ADD_WEEK))
+
 export {
-sortByProp,
-getSlower,
-getFaster,
-getDowntime,
-getUptime,
-getMedian,
-filterError,
-filterSample,
-pluck,
-toDate,
+	getWeekNumber,
+	groupByWeek,
+	groupByDay,
+	sortByProp,
+	getSlower,
+	getFaster,
+	getDowntime,
+	getUptime,
+	getMedian,
+	filterError,
+	filterSample,
+	pluck,
+	toDate,
 }

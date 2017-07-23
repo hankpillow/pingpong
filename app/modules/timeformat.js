@@ -58,4 +58,12 @@ const tinyDate = R.map(date =>  {
 	return `${WEEK_DAYS[date.getDay()]}${date.getDate()} ${date.getFullYear()}`
 })
 
-export {pretty, tinyDate}
+//@full credits to https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php/6117889#6117889
+const getWeekNumber = date => {
+	let d = new Date(+date);
+	d.setHours(0,0,0);
+	d.setDate(d.getDate()+4-(d.getDay()||7));
+	return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+}
+
+export {pretty, tinyDate, getWeekNumber}
