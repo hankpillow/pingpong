@@ -76,7 +76,7 @@ def format_error(arr):
         return {
             "type": "error",
             "date": datetime.strptime(arr[0], DATE_TEMPLATE),
-            "exit_code": arr[1],
+            "exit_code": arr[1][1:],
             "url": arr[2],
             "user": arr[3] if len(arr) > 3 else ""
         }

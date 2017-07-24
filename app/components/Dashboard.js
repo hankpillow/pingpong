@@ -16,14 +16,6 @@ const Dashboard = ({data}) => {
 		}, {})
 	}
 
-	const sortByDate = list => {
-		return list.sort((a, b) => {
-			if(a.date < b.date) return -1;
-			if(a.date > b.date) return 1;
-			return 0;
-		})
-	}
-
 	const panes = splitInPages(data)
 	return (
 			<div className={'dashboard'}>

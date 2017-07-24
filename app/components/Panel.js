@@ -9,14 +9,14 @@ const CURL_URLS = ["CURLEOK", "CURLEUNSUPPORTEDPROTOCOL", "CURLEFAILEDINIT", "CU
 
 const ErrorList = ({data}) => {
 	return (
-			<ol> {data.reverse().map(({date, exit_code}) => {
+			<ol> {data.map(({date, exit_code}) => {
 				return <li>
 					<time datetime={date}>{pretty(date)}</time> -
 					<a
 						target={'_blank'}
-						href={'https://curl.haxx.se/libcurl/c/libcurl-errors.html#' + CURL_URLS[exit_code.substring(1)]}
+						href={'https://curl.haxx.se/libcurl/c/libcurl-errors.html#' + CURL_URLS[exit_code]}
 					>
-						{CURL_CODES[exit_code.substring(1)]}
+						{CURL_CODES[exit_code]}
 					</a></li>
 			}) }
 			</ol>
