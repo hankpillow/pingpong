@@ -1,5 +1,5 @@
 import test from 'ava'
-import * as insights from './modules/insights'
+import * as insights from '../../dashboard/modules/insights'
 
 test('insight.getMedia', t => {
 	const data = [

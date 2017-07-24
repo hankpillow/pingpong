@@ -1,5 +1,5 @@
 import test from 'ava'
-import * as d from './modules/data'
+import * as d from '../../dashboard/modules/data'
 
 test('data.filterSample', t => {
 	const data = [

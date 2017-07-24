@@ -20,7 +20,7 @@
       "babel-register"
     ],
     "files": [
-      "app/test.*.js"
+      "test/dashboard/*"
     ]
   },
   "babel": {

@@ -19,9 +19,10 @@ const TimeRequest = ({status, load}) => {
 			<label>
 				<select onChange={getSelected}>
 					<option value="">Select the range you want to inspect</option>
-					<option value="30m">last 30m</option>
+					<option value="30m">just now</option>
 					<option value="24h">last 24h</option>
-					<option value="7d">last 7d</option>
+					<option value="7d">last week</option>
+					<option value="31d">last month</option>
 				</select>
 			</label>
 		</form>

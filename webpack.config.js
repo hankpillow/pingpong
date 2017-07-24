@@ -10,19 +10,20 @@ module.exports = function(env) {
 	let config = {
 
 		entry: {
-			app: './app'
+			dashboard: './dashboard'
 		},
 
 		output: {
-			path: path.join(__dirname + '/app'),
+			path: path.join(__dirname + '/dashboard'),
 			filename: '[name].bundle.js'
 		},
 
 		resolve: {
 			modules: ['node_modules'],
 			alias: {
-				root: path.resolve(__dirname + '/app'),
-				modules: path.resolve(__dirname + '/app/modules')
+				root: path.resolve(__dirname + '/dashboard'),
+				modules: path.resolve(__dirname + '/dashboard/modules'),
+				components: path.resolve(__dirname + '/dashboard/components')
 			}
 		},
 
@@ -50,7 +51,7 @@ module.exports = function(env) {
 	if (isDev){
 		config.devtool = 'source-map',
 		config.devServer = {
-			contentBase: path.join(__dirname, '/app'),
+			contentBase: path.join(__dirname, '/dashboard'),
 			compress: false,
 			proxy: {
 				'/api': {

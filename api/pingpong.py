@@ -1,3 +1,7 @@
+# TODO
+# sort by date
+# cache respose
+# keep opened filed for Xtime
 
 from datetime import datetime, timedelta
 
