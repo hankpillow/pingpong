@@ -1,0 +1,25 @@
+{
+  "parser": "babel-eslint",
+  "extends": "eslint:recommended",
+  "plugins": [
+    "react"
+    ],
+    "rules": {
+      "no-unused-vars": [1, { "varsIgnorePattern": "^h$" }]
+    },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "modules": true,
+        "jsx": true
+      }
+    },
+    "env": {
+      "browser": true,
+      "mocha": true,
+      "node": true,
+      "es6": true
+    },
+    "globals": {
+      "expect": true
+    }
+}

@@ -9,7 +9,7 @@ import {getUptime} from 'modules/insights'
 import {tinyDate, pretty} from 'modules/timeformat'
 
 //comps
-import {ErrorList} from 'components/insights/ErrorList'
+import ErrorList from 'insights/ErrorList'
 
 const Dashboard = ({data}) => {
 	data = data || []
@@ -19,10 +19,13 @@ const Dashboard = ({data}) => {
 	const uptime = getUptime(samples)
 
 	if (data.length === 0) {
-		// first state
+
+		// Initial state
 		return ''
+
 	} else if (samples.length === 0 && errors.length){
-		// only errors
+
+		// If only has errors
 		return (
 			<div className={'panel'}>
 				<ErrorList data={errors} />
@@ -35,7 +38,6 @@ const Dashboard = ({data}) => {
 				<ul>
 					<li>uptime: {parseInt(uptime * 100)}%</li>
 					<li>samples: {samples.length}</li>
-					<li>error: {errors.length}</li>
 				</ul>
 				<div className={'uptime-chcks'}>
 					<span>uptime checks:</span>
@@ -46,7 +48,4 @@ const Dashboard = ({data}) => {
 	)
 }
 
-export default connect(
-	state => ({data:state.data}),
-	actions)
-(Dashboard)
+export default connect(state => ({data:state.data}), actions)(Dashboard)

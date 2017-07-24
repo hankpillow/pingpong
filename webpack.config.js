@@ -23,7 +23,8 @@ module.exports = function(env) {
 			alias: {
 				root: path.resolve(__dirname + '/dashboard'),
 				modules: path.resolve(__dirname + '/dashboard/modules'),
-				components: path.resolve(__dirname + '/dashboard/components')
+				components: path.resolve(__dirname + '/dashboard/components'),
+				insights: path.resolve(__dirname + '/dashboard/components/insights')
 			}
 		},
 
@@ -33,7 +34,10 @@ module.exports = function(env) {
 				use:[{
 					loader: 'babel-loader',
 					options: {
-						presets: ['env'],
+						presets: [
+							"es2015",
+							"stage-0"
+						],
 						plugins: [
 							["transform-object-rest-spread"],
 							['transform-react-jsx', {pragma: 'h'}]

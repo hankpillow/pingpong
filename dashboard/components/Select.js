@@ -23,6 +23,7 @@ const TimeRequest = ({status, load}) => {
 					<option value="24h">last 24h</option>
 					<option value="7d">last week</option>
 					<option value="31d">last month</option>
+					<option value="90d">90 days</option>
 				</select>
 			</label>
 		</form>
