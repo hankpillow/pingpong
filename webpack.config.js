@@ -30,11 +30,23 @@ module.exports = function(env) {
 
 		module: {
 			rules: [{
+					test: /\.js$/,
+					enforce: 'pre',
+					exclude: /(node_modules|bower_components|\.spec\.js)/,
+					use: [ {
+						loader: 'eslint-loader',
+						options: {
+							failOnWarning: false,
+							failOnError: false
+						}
+					}]
+				},{
 				test: /\.jsx?$/i,
 				use:[{
 					loader: 'babel-loader',
 					options: {
 						presets: [
+							"env",
 							"es2015",
 							"stage-0"
 						],

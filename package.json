@@ -26,8 +26,7 @@
   },
   "babel": {
     "presets": [
-      "es2015",
-      "stage-0"
+      "env"
     ],
     "plugins": [
       "transform-object-rest-spread"
@@ -40,9 +39,11 @@
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "eslint": "^4.3.0",
+    "eslint-loader": "^1.9.0",
     "eslint-plugin-react": "^7.1.0",
     "husky": "^0.14.3",
     "linkstate": "^1.0.1",
