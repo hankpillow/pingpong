@@ -1,4 +1,4 @@
-# Pingpong
+## Pingpong
 
 	1. My personal "pingdom"
 
@@ -10,13 +10,13 @@ This project is fully based on [xordiv/docker-alpine-cron](https://github.com/xo
 
 ----
 
-## SETUP
+## Setup
 
 Out of the box it has it's own _URLS_ file pointing to [https://hub.docker.com](https://hub.docker.com).
 
 You must define your own set urls by sharing, as volume, your _URLS_ file.
 
-#### URLS
+### URLS
 
 The _URLS_ file is a text file containing one url per line. Ex:
 
@@ -26,15 +26,17 @@ The _URLS_ file is a text file containing one url per line. Ex:
 
 > The user and password are sent via [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
 
-#### Log result
+----
+
+## Log result
 
 All logs will be saved (container's path) at  */var/log/pingpong.log* (container's errors on */var/log/pingpong.error.log*)
 
-* Success
+### Success
 
 Follow the log format:
 
-> the timestamp cames from container's clock and request's data from [cURL -w](https://curl.haxx.se/docs/manpage.html#-w)
+> the timestamp cames from container's clock and request's data from *[cURL -w](https://curl.haxx.se/docs/manpage.html#-w)*
 
 ```
 (date +%F_%T) %{http_code} %{time_namelookup} %{time_connect} %{time_appconnect} %{time_pretransfer} %{time_redirect} %{time_starttransfer} %{time_total} %{num_redirects} %{url_effective}
@@ -47,7 +49,7 @@ Example:
 2017-07-25_13:41:01 200 0.014615 0.159831 0.480699 0.480813 0.000000 0.635834 0.635903 0 https://hub.docker.com/
 ```
 
-* Error
+###  Error
 
 When cURL exit code is not 0 (error) the log follow this fields:
 
@@ -61,13 +63,11 @@ Example:
 2017-07-13_12:31:01 !6 http://foo.bar/
 ```
 
-> the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
+> the list of exit codes is *[here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)*
 
 ----
 
-## CONFIG
-
-### pingpong
+## Config
 
 All config must be provided via environment variable
 
@@ -77,9 +77,9 @@ All config must be provided via environment variable
 
 * `MAX_TIME` - default `10` (time in sec). Define the request's timeout. [@see cURL --max-time](https://curl.haxx.se/docs/manpage.html#-m)
 
-## RUN
+----
 
-### pingpong
+## RUN
 
 1. Make sure you have the URLS file
 
