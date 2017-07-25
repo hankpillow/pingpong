@@ -1,8 +1,1 @@
 *.log
-*.tmp
-log/
-URLS
-node_modules/
-**/*.bundle.*
-.vscode
-app-bundle/
