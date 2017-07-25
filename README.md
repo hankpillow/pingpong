@@ -2,33 +2,23 @@
 
 	1. My personal "pingdom"
 
-	2. This project was created to help debuging server availability.
+	2. This project was created help checking server uptime
 
-	3. **It's not designed to be used on production env**
+	3. *It's not designed to be used on production env*
 
-This project is split into 2 parts:
-
-1. **pingpong-core**
-
-A [xordiv/docker-alpine-cron](https://github.com/xordiv/docker-alpine-cron) container (<8mb) that cURLs a list of urls - every minute - and save each result into a new line in a log file
-
-2. **pingpong-api**
-
-A [jfloff/alpine-python:2.7-slim](https://github.com/jfloff/alpine-python) container (<57mb) that can read the **pingpong-core** log and parse it with an API.
+This project is fully based on [xordiv/docker-alpine-cron](https://github.com/xordiv/docker-alpine-cron) container (<8mb) that cURLs a list of urls - every minute - and save each result into a new line in a log file
 
 ----
 
 ## SETUP
 
-### pingpong-core
+Out of the box it has it's own _URLS_ file pointing to [https://hub.docker.com](https://hub.docker.com).
 
-Out of the box it has it's own URLS file pointing to [https://hub.docker.com](https://hub.docker.com).
-
-You must define your own set urls by sharing, as volume, your URLS file.
+You must define your own set urls by sharing, as volume, your _URLS_ file.
 
 #### URLS
 
-The URLS file is a text file containing one url per line. Ex:
+The _URLS_ file is a text file containing one url per line. Ex:
 
 	http://www.google.com
 	#http://this.line.will.be/ignored
@@ -38,7 +28,7 @@ The URLS file is a text file containing one url per line. Ex:
 
 #### Log result
 
-All logs will be saved at **/var/log/pingpong.log** (container's errors on **/var/log/pingpong.error.log**)
+All logs will be saved (container's path) at  */var/log/pingpong.log* (container's errors on */var/log/pingpong.error.log*)
 
 * Success
 
