@@ -3,7 +3,7 @@ FROM xordiv/docker-alpine-cron
 RUN apk add --update curl \
     && rm -rf /var/cache/apk/*
 
-COPY ./URLS /var/URLS
+COPY ./URLS /var
 
 WORKDIR /scripts
 COPY ./curl-parse.txt .
