@@ -22,7 +22,9 @@ A [jfloff/alpine-python:2.7-slim](https://github.com/jfloff/alpine-python) conta
 
 ### pingpong-core
 
-This container **expect** a file called **URLS** at **/var/** path (container's path)
+Out of the box it has it's own URLS file pointing to [https://hub.docker.com](https://hub.docker.com).
+
+You must define your own set urls by sharing, as volume, your URLS file.
 
 #### URLS
 
@@ -32,7 +34,7 @@ The URLS file is a text file containing one url per line. Ex:
 	#http://this.line.will.be/ignored
 	https://my.projected-page.com username:password
 
-> The user and password is sent via [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
+> The user and password are sent via [cURL -u](https://curl.haxx.se/docs/manpage.html#-u)
 
 #### Log result
 
@@ -42,6 +44,8 @@ All logs will be saved at **/var/log/pingpong.log** (container's errors on **/va
 
 Follow the log format:
 
+> the timestamp cames from container's clock and request's data from [cURL -w](https://curl.haxx.se/docs/manpage.html#-w)
+
 ```
 (date +%F_%T) %{http_code} %{time_namelookup} %{time_connect} %{time_appconnect} %{time_pretransfer} %{time_redirect} %{time_starttransfer} %{time_total} %{num_redirects} %{url_effective}
 ```
@@ -49,10 +53,9 @@ Follow the log format:
 Example:
 
 ```
-2017-07-14_13:27:01 200 0.002943 0.006507 0.026852 0.026948 0.173054 0.313259 0.486344 1 https://www.facebook.com/
+2017-07-25_13:40:01 200 0.013449 0.159021 0.553087 0.553294 0.000000 0.731974 0.732055 0 https://hub.docker.com/
+2017-07-25_13:41:01 200 0.014615 0.159831 0.480699 0.480813 0.000000 0.635834 0.635903 0 https://hub.docker.com/
 ```
-
-> the timestamp cames from container's clock and request's data from [cURL -w](https://curl.haxx.se/docs/manpage.html#-w)
 
 * Error
 
@@ -69,31 +72,24 @@ Example:
 ```
 
 > the list of exit codes is [here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)!
-> you can check whether a register is an error by the number of columns or testing by **!** on status column.
 
 ----
 
 ## CONFIG
 
-### pingpong-core
+### pingpong
 
 All config must be provided via environment variable
 
-* `FOLLOW_LINKS` - default `1` (0|1). Define whether redirects should be followed [@see cURL -L flag](https://curl.haxx.se/docs/manpage.html#-L)
+* `FOLLOW_LINKS` - default `1` (0|1). Define whether redirects should be followed [@see cURL -L flag](https://curl.haxx.se/docs/manpage.html#-L) (when following links you won't see redirect status code, intead the final status code + _num_redirects_ updated.
 
 * `APPEND_LOG` - default `1` (0|1). Define whether appending into the  same log file `pingpong.log` or if every time the script is called a new file must be created (`pingpong.log-<timestamp>`)
 
-* `MAX_TIME` - default `10`. Define the request's timeout. [@see cURL --max-time](https://curl.haxx.se/docs/manpage.html#-m)
-
-### pingpong-api
-
-TBD
-
-----
+* `MAX_TIME` - default `10` (time in sec). Define the request's timeout. [@see cURL --max-time](https://curl.haxx.se/docs/manpage.html#-m)
 
 ## RUN
 
-### pingpong-core
+### pingpong
 
 1. Make sure you have the URLS file
 
@@ -119,12 +115,9 @@ docker run -d \
 tails -f ./log/*
 ```
 
-### pingpong-api
+## ROADMAP
 
-TBD
+- Send email when server's down
+- Max-size log
+- Max-lines log
 
----
-
-### TODO
-
-* allow setting cron frequency via param

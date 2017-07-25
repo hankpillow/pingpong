@@ -1,11 +1,16 @@
 version: '3'
 
 services:
-  core.local:
-    image: pingpong-core
+  pingpong.local:
+    image: pingpong.local
     build:
       context: .
-      dockerfile: Dockerfile.core
+      dockerfile: Dockerfile
+    volumes:
+      - ./log:/var/log:rw
+
+  pingpong:
+    image: mrboots/pingpong
     volumes:
       - ./URLS:/var/URLS
       - ./log:/var/log:rw
@@ -14,22 +19,3 @@ services:
       - FOLLOW_LINKS=1
       - APPEND_LOG=1
       - MAX_TIME=30
-
-  core:
-    image: mrboots/pingpong-core
-    volumes:
-      - ./URLS:/var/URLS
-      - ./log:/var/log:rw
-    environment:
-      - CRON_STRINGS=*/10 * * * * /bin/sh /scripts/run.sh
-
-  api.local:
-    image: pingpong-api
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    ports:
-      - 8000:8000
-    volumes:
-      - ./api/pingpong.py:/pingpong.py
-      - ./log/pingpong.log:/var/DB
