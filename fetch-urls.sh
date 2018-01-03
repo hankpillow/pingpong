@@ -44,27 +44,28 @@ while read -r site; do
 		if [[ $? == 0 ]]; then
 
 			# append date into sample object
-			SAMPLE=$(echo $RESULT | jq -c --arg date "$(date +%F_%T)" '.date |= . + $date' )
-
+			SAMPLE="$(echo $RESULT | jq -r -c --arg date "$(date +%F_%T)" '.date |= . + $date ' )"
 			EXIT_CODE=$?
+
 			if [[ $EXIT_CODE == 0 ]]; then
-				LIST=$(cat $TARGET_SUCCESS | jq -c -a --arg sample "$SAMPLE" '. |= . + [$sample]')
+
+				LIST=$(cat $TARGET_SUCCESS | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ')
 
 				if [[ ! $? == 0 ]]; then
-					logerror "e1" "jq couldnt append the sample on the list"
+					logerror "jq couldnt append the sample on the list" "e1"
 					exit 1
 				fi
 
-				echo $LIST > $TARGET_SUCCESS
+				echo "$LIST" > $TARGET_SUCCESS
 
 			else
-				logerror "e2" "jq couldnt append date or parse the given input"
+				logerror "jq couldnt append date or parse the given input" "e2"
 				exit 1
 			fi
-			echo "done"
+			echo "ok"
 
 		else
-			logerror $EXIT_CODE $URL
+			logerror $URL $EXIT_CODE
 			echo "failed $EXIT_CODE"
 		fi
 
