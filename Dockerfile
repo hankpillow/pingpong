@@ -1,12 +1,15 @@
 FROM xordiv/docker-alpine-cron
 
+ENV PINGPONG_SOURCE=/scripts
+
 RUN apk add --update curl \
-    && rm -rf /var/cache/apk/*
+	&& apk add jq \
+	&& rm -rf /var/cache/apk/*
 
-COPY ./URLS /var
+WORKDIR ${PINGPONG_SOURCE}
 
-WORKDIR /scripts
-COPY ./curl-parse.txt .
+COPY ./URLS ${PINGPONG_SOURCE}
+COPY ./scripts
 COPY ./run.sh .
 
 RUN echo "* * * * * /bin/sh /scripts/run.sh" > /etc/cron.d/crontabs
