@@ -1,15 +1,21 @@
-FROM xordiv/docker-alpine-cron
+FROM alpine
+# FROM xordiv/docker-alpine-cron
 
-ENV PINGPONG_SOURCE=/scripts
+RUN apk add --no-cache curl bash jq tzdata && \
+	rm -rf /var/cache/apk/*
 
-RUN apk add --update curl \
-	&& apk add jq \
-	&& rm -rf /var/cache/apk/*
+RUN mkdir -p /var/pingpong/logs
+RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime &&\
+	echo "America/Sao_Paulo" > /etc/timezone
 
-WORKDIR ${PINGPONG_SOURCE}
+WORKDIR /var/pingpong
 
-COPY ./URLS ${PINGPONG_SOURCE}
-COPY ./scripts
-COPY ./run.sh .
+COPY ./URLS .
+COPY ./curl-parse-result .
+COPY ./fetch-urls .
+COPY ./crontabs .
 
-RUN echo "* * * * * /bin/sh /scripts/run.sh" > /etc/cron.d/crontabs
+RUN crontab crontabs
+CMD ["/usr/sbin/crond", "-f", "-d", "0"]
+
+# RUN chmod 0644 /var/pingpong/fetch-urls

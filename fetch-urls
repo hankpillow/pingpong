@@ -1,12 +1,18 @@
 #!/bin/bash
 
-ROOT="$(pwd $0)"
+ROOT="${0%/*}"
 URL_LIST=$ROOT/URLS
 TARGET_ERROR=$ROOT/logs/pingpong-error.log
 TARGET_SUCCESS=$ROOT/logs/pingpong.log
 
+echo "fetching urls from $URL_LIST"
+echo "logs will be saved at $TARGET_SUCCESS and $TARGET_ERROR"
+
 [[ $FOLLOW_LINKS == 0 ]] && FOLLOW="" || FOLLOW=" -L "
 [[ $MAX_TIME -gt 0 ]] && TIMEOUT="$MAX_TIME" || TIMEOUT=10
+
+if [[ ! -f $TARGET_SUCCESS ]]; then echo "[]" > $TARGET_SUCCESS; fi
+if [[ ! -f $TARGET_ERROR ]]; then echo "[]" > $TARGET_ERROR; fi
 
 logerror () {
 
@@ -31,9 +37,6 @@ if [[ ! -f $URL_LIST ]]; then
 	exit 1
 fi
 
-if [[ ! -f $TARGET_SUCCESS ]]; then echo "[]" > $TARGET_SUCCESS; fi
-if [[ ! -f $TARGET_ERROR ]]; then echo "[]" > $TARGET_ERROR; fi
-
 while read -r url; do
 
 	URL=$(echo "$url" | awk '{print $1}')
@@ -44,7 +47,7 @@ while read -r url; do
 	# only urls starting with http(s):// will be tested.
 	if [[ $URL =~ ^https?:// ]]; then
 
-		echo -n "#fetching url $URL: "
+	  printf "# fetching url $URL: "
 		RESULT=$(curl $URL -w "@$ROOT/curl-parse-result" $FOLLOW $LOGIN --insecure \
 			--max-time $TIMEOUT --compressed -I --silent -o /dev/null \
 			-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36')
@@ -63,7 +66,7 @@ while read -r url; do
 					logerror "jq couldnt append the sample on the list" "e1"
         else
           echo $LIST > $TARGET_SUCCESS
-          echo "ok"
+          printf "ok\n"
 				fi
 
 			else
@@ -72,12 +75,12 @@ while read -r url; do
 
 		else
 			logerror $URL "$EXIT_CODE"
-			echo "error"
+			printf "error\n"
 		fi
 
 	fi
 
 done < "$URL_LIST"
 
-echo "#done"
+printf "# done"
 exit 0
