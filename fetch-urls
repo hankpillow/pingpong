@@ -10,15 +10,14 @@ TARGET_SUCCESS=$ROOT/logs/pingpong.log
 
 logerror () {
 
-	SAMPLE=$(echo "{\"date\":\"$(date +%F_%T)\",\"message\":\"$1\",\"error_code\":\"$2\"}" | jq -r -c '.')
-
+	ERROR=$(echo "{\"date\":\"$(date +%F_%T)\",\"url\":\"$1\",\"error_code\":\"$2\"}" | jq -r -c '.')
 	if [[ $? == 0 ]]; then
 
-    LIST=$(cat $TARGET_ERROR | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ')
-
+    LIST=$(cat $TARGET_ERROR | jq -r -c --argjson sample $ERROR '. |= . + [$sample] ')
     if [[ $? == 0 ]]; then
       echo $LIST > $TARGET_ERROR
     else
+      echo $ERROR
       echo "[pingpong] jq couldnt append the error on the list"
     fi
 
@@ -35,10 +34,10 @@ fi
 if [[ ! -f $TARGET_SUCCESS ]]; then echo "[]" > $TARGET_SUCCESS; fi
 if [[ ! -f $TARGET_ERROR ]]; then echo "[]" > $TARGET_ERROR; fi
 
-while read -r site; do
+while read -r url; do
 
-	URL=$(echo "$site" | awk '{print $1}')
-	USER=$(echo "$site" | awk '{print $2}')
+	URL=$(echo "$url" | awk '{print $1}')
+	USER=$(echo "$url" | awk '{print $2}')
 
 	[[ ! -z $USER ]] && LOGIN=" -u $USER" || LOGIN=""
 
@@ -49,15 +48,15 @@ while read -r site; do
 		RESULT=$(curl $URL -w "@$ROOT/curl-parse-result" $FOLLOW $LOGIN --insecure \
 			--max-time $TIMEOUT --compressed -I --silent -o /dev/null \
 			-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36')
+    EXIT_CODE=$?
 
 		# check for last exit code
-		if [[ $? == 0 ]]; then
+		if [[ $EXIT_CODE == 0 ]]; then
 
 			# append date into sample object
 			SAMPLE="$(echo $RESULT | jq -r -c --arg date "$(date +%F_%T)" '.date |= . + $date ' )"
-			EXIT_CODE=$?
 
-			if [[ $EXIT_CODE == 0 ]]; then
+			if [[ $? == 0 ]]; then
 
         LIST=$(cat $TARGET_SUCCESS | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ' )
 				if [[ ! $? == 0 ]]; then
@@ -72,7 +71,7 @@ while read -r site; do
 			fi
 
 		else
-			logerror $URL $EXIT_CODE
+			logerror $URL "$EXIT_CODE"
 			echo "error"
 		fi
 
