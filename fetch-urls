@@ -9,21 +9,31 @@ TARGET_SUCCESS=$ROOT/logs/pingpong.log
 [[ $MAX_TIME -gt 0 ]] && TIMEOUT="$MAX_TIME" || TIMEOUT=10
 
 logerror () {
-	echo "{\"date\":\"$(date +%F_%T)\",\"message\":\"$1\",\"error_code\":\"$2\"}" | jq '.'
+
+	SAMPLE=$(echo "{\"date\":\"$(date +%F_%T)\",\"message\":\"$1\",\"error_code\":\"$2\"}" | jq -r -c '.')
+
+	if [[ $? == 0 ]]; then
+
+    LIST=$(cat $TARGET_ERROR | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ')
+
+    if [[ $? == 0 ]]; then
+      echo $LIST > $TARGET_ERROR
+    else
+      echo "[pingpong] jq couldnt append the error on the list"
+    fi
+
+  else
+		echo "[pingpong] jq couldnt parse the error sample"
+	fi
 }
 
 if [[ ! -f $URL_LIST ]]; then
-	logerror 100 "missing URL file"
+	logerror "missing URL file" "e0"
 	exit 1
 fi
 
-if [[ ! -f $TARGET_SUCCESS ]]; then
-	echo "[]" > $TARGET_SUCCESS
-fi
-
-if [[ ! -f $TARGET_ERROR ]]; then
-	echo "[]" > $TARGET_ERROR
-fi
+if [[ ! -f $TARGET_SUCCESS ]]; then echo "[]" > $TARGET_SUCCESS; fi
+if [[ ! -f $TARGET_ERROR ]]; then echo "[]" > $TARGET_ERROR; fi
 
 while read -r site; do
 
@@ -49,28 +59,26 @@ while read -r site; do
 
 			if [[ $EXIT_CODE == 0 ]]; then
 
-				LIST=$(cat $TARGET_SUCCESS | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ')
-
+        LIST=$(cat $TARGET_SUCCESS | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ' )
 				if [[ ! $? == 0 ]]; then
 					logerror "jq couldnt append the sample on the list" "e1"
-					exit 1
+        else
+          echo $LIST > $TARGET_SUCCESS
+          echo "ok"
 				fi
-
-				echo "$LIST" > $TARGET_SUCCESS
 
 			else
 				logerror "jq couldnt append date or parse the given input" "e2"
-				exit 1
 			fi
-			echo "ok"
 
 		else
 			logerror $URL $EXIT_CODE
-			echo "failed $EXIT_CODE"
+			echo "error"
 		fi
 
 	fi
 
 done < "$URL_LIST"
+
 echo "#done"
 exit 0
