@@ -2,11 +2,8 @@
 
 ROOT="${0%/*}"
 URL_LIST=$ROOT/URLS
-TARGET_ERROR=$ROOT/logs/pingpong-error.log
-TARGET_SUCCESS=$ROOT/logs/pingpong.log
-
-echo "fetching urls from $URL_LIST"
-echo "logs will be saved at $TARGET_SUCCESS and $TARGET_ERROR"
+TARGET_ERROR=$ROOT/logs/samples.json
+TARGET_SUCCESS=$ROOT/logs/errors.json
 
 [[ $FOLLOW_LINKS == 0 ]] && FOLLOW="" || FOLLOW=" -L "
 [[ $MAX_TIME -gt 0 ]] && TIMEOUT="$MAX_TIME" || TIMEOUT=10
@@ -37,6 +34,12 @@ if [[ ! -f $URL_LIST ]]; then
 	exit 1
 fi
 
+echo "# Pingpong will start fetching pages"
+echo "# * urls from: $URL_LIST"
+echo "# * samples at: $TARGET_SUCCESS"
+echo "# * erros at: $TARGET_ERROR"
+echo "# ----------------------------------"
+
 while read -r url; do
 
 	URL=$(echo "$url" | awk '{print $1}')
@@ -47,13 +50,12 @@ while read -r url; do
 	# only urls starting with http(s):// will be tested.
 	if [[ $URL =~ ^https?:// ]]; then
 
-	  printf "# fetching url $URL: "
+    printf "# $(date +%F_%T) $URL: "
 		RESULT=$(curl $URL -w "@$ROOT/curl-parse-result" $FOLLOW $LOGIN --insecure \
 			--max-time $TIMEOUT --compressed -I --silent -o /dev/null \
 			-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36')
     EXIT_CODE=$?
 
-		# check for last exit code
 		if [[ $EXIT_CODE == 0 ]]; then
 
 			# append date into sample object
@@ -82,5 +84,5 @@ while read -r url; do
 
 done < "$URL_LIST"
 
-printf "# done"
+echo "# done"
 exit 0

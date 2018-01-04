@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "CRON_MIN: $CRON_MINUTE"
+echo "CRON_HOUR: $CRON_HOUR"
+echo "CRON_DAY_MONTH: $CRON_DAY_MONTH"
+echo "CRON_MONTH: $CRON_MONTH"
+echo "CRON_DAY_WEEK: $CRON_DAY_WEEK"
+echo "$CRON_MINUTE $CRON_HOUR $CRON_DAY_MONTH $CRON_MONTH $CRON_DAY_WEEK /bin/bash /var/pingpong/fetch-urls" > crontabs
+
+# set crontabs and start it
+crontab crontabs
+crond -f -d 0

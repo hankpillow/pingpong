@@ -1,27 +1,23 @@
 ## Pingpong
 
-	1. My personal "pingdom"
+THIS IS A PERSONAL PROJECT!
 
-	2. This project was created for helping monitoring services availability
+It is designed to cURL [information](https://curl.haxx.se/docs/manpage.html#-w) from a list of url
 
-	3. *It's not designed to be used on production env*
-
-This project is fully based on [xordiv/docker-alpine-cron](https://github.com/xordiv/docker-alpine-cron) container (<8mb) and it cURLs a list of urls - every minute out of the box or defined by the user - and save each result into a new line in a log file
+The idea is to have a lightweight container using `crontab` and `jq` to fetch and save as JSON
 
 ----
 
 ## Setup
 
-You define/provide you list of URLs by sharing a local file with the container.
+You must create a list of urls and share it (via shared volumes) with the container.
 
-The easiest way is creating a file named URLS (i.e: `echo http://reddit.com > URLS')
+i.e: `echo http://reddit.com > URLS'
 
-### URL list
-
-The _URLS_ file is a text file containing one url per line. Ex:
+The `URLS` file is a text file containing one url per line.
 
 	http://www.google.com
-  # lines starting with sharp (#) will be ignored
+	# lines starting with sharp (#) will be ignored
 	# http://this.line.will.be/ignored
 	https://my-protected-page.com username:password
 
@@ -29,50 +25,85 @@ The _URLS_ file is a text file containing one url per line. Ex:
 
 ----
 
-## Log result
+## Log Success
 
-All logs will be saved at /var/log (container's path)
+All logs will be saved at `/var/pingpong/logs/samples.json` (container's path)
 
-> the timestamp all logs have cames from container's clock and request's data from *[cURL -w](https://curl.haxx.se/docs/manpage.html#-w)*
+> the information collected came from [cURL -w](https://curl.haxx.se/docs/manpage.html#-w) command. Check there for more info.
 
-### Success
+When cURL finishes with `exit 0` a new sample will be pushed into `/var/pingpong/logs/samples.json` file.
 
-> /var/log/pingpong.log
+All samples follow the format:
 
-The log follow the format:
+```json
+{
+  "date": "2018-01-03_17:39:49",
+  "http_code": "200",
+  "http_connect": "000",
+  "http_version": "1.1",
+  "num_connects": "2",
+  "num_redirects": "1",
+  "proxy_ssl_verify_result": "0",
+  "redirect_url": "",
+  "remote_ip": "52.72.116.221",
+  "remote_port": "443",
+  "scheme": "HTTPS",
+  "size_download": "0",
+  "size_header": "312",
+  "size_request": "442",
+  "size_upload": "0",
+  "speed_download": "0.000",
+  "speed_upload": "0.000",
+  "ssl_verify_result": "0",
+  "time_appconnect": "0.478933",
+  "time_connect": "0.153941",
+  "time_namelookup": "0.004277",
+  "time_pretransfer": "0.478985",
+  "time_redirect": "0.350364",
+  "time_starttransfer": "0.674499",
+  "time_total": "1.024888",
+  "url_effective": "https://hub.docker.com/"
+}
+```
+## Log Error
+
+All logs will be saved at `/var/pingpong/logs/errors.json` (container's path)
+
+When cURL exit code is *not 0* a new error will be pushed into `/var/pingpong/logs/errors.json` file.
+
+All errors follow the format:
+
+```json
+{
+  "date": "2018-01-03_17:39:54",
+  "url": "http://reddddit.com",
+  "error_code": "56"
+}
 
 ```
-(date +%F_%T) %{http_code} %{time_namelookup} %{time_connect} %{time_appconnect} %{time_pretransfer} %{time_redirect} %{time_starttransfer} %{time_total} %{num_redirects} %{url_effective}
-```
-
-Example:
-
-```
-2017-07-25_13:40:01 200 0.013449 0.159021 0.553087 0.553294 0.000000 0.731974 0.732055 0 https://hub.docker.com/
-2017-07-25_13:41:01 200 0.014615 0.159831 0.480699 0.480813 0.000000 0.635834 0.635903 0 https://hub.docker.com/
-```
-
-###  Error
-
-r /var/log/pingpong-error.log
-
-When cURL exit code is not 0 (error) the log follow this fields:
-
-```
-(date +%F_%T) !{exit code} {url} {credentials}
-```
-
-Example:
-
-```
-2017-07-13_12:31:01 !6 http://foo.bar/
-```
-
-> the list of exit codes is *[here](https://curl.haxx.se/libcurl/c/libcurl-errors.html)*
 
 ----
 
-## Config
+## Getting started
+
+1. Make sure you have the URLS file and a logs folder (`mkdir ./logs`)
+
+2. start the container as daemon and share the URLS and the log folder  as volume
+
+```
+docker run -d \
+   -v $(pwd)/URLS:/var/URLS \
+   -v $(pwd)/logs:/var/logs:rw \
+   mrboots/pingpong
+```
+
+Now you can check the activity via `tail -f ./log/*`
+
+> by default the container will run every minute, so wait for a minute at least to see the results
+
+----
+
+## Container Config
 
 All config must be provided via environment variable
 
@@ -80,29 +111,20 @@ All config must be provided via environment variable
 
 * `MAX_TIME` - default `10` (time in sec). Define the request's timeout. [@see cURL --max-time](https://curl.haxx.se/docs/manpage.html#-m)
 
-----
+* `CRON_MINUTE` - defautl `*`
 
-## RUN
+* `CRON_HOUR` - defautl `*`
 
-1. Make sure you have the URLS file and a log's container (`mkdir log`)
+* `CRON_DAY_MONTH` - defautl `*`
 
-2. start the container as daemon and share the URLS and the log holder as volume
+* `CRON_MONTH` - defautl `*`
 
-```
-docker run -d \
-   -v $(pwd)/URLS:/var/URLS \
-   -v $(pwd)/log:/var/log:rw \
-   mrboots/pingpong
-```
+* `CRON_DAY_WEEK` - defautl `*`
 
-3. check the activity
+* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
 
-```
-tail -f ./log/*
-```
+* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
 
-## ROADMAP
+> check the [wiki](https://en.wikipedia.org/wiki/Cron) for more details or use the [crontab generator](https://crontab-generator.org/) to help you feeding these values.
 
-- Max-size log
-- Max-lines log
 
