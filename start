@@ -1,12 +1,19 @@
 #!/bin/bash
 
-echo "CRON_MIN: $CRON_MINUTE"
-echo "CRON_HOUR: $CRON_HOUR"
-echo "CRON_DAY_MONTH: $CRON_DAY_MONTH"
-echo "CRON_MONTH: $CRON_MONTH"
-echo "CRON_DAY_WEEK: $CRON_DAY_WEEK"
+echo "# STARTING PINGPONG CONTAINER"
+echo "# Setting crontabs from env params:"
+echo "# CRON_MIN: $CRON_MINUTE"
+echo "# CRON_HOUR: $CRON_HOUR"
+echo "# CRON_DAY_MONTH: $CRON_DAY_MONTH"
+echo "# CRON_MONTH: $CRON_MONTH"
+echo "# CRON_DAY_WEEK: $CRON_DAY_WEEK"
+
 echo "$CRON_MINUTE $CRON_HOUR $CRON_DAY_MONTH $CRON_MONTH $CRON_DAY_WEEK /bin/bash /var/pingpong/fetch-urls" > crontabs
+
+echo "# crontabs created as:"
+echo "# $(cat crontabs)"
+echo "# --------------------------------"
 
 # set crontabs and start it
 crontab crontabs
-crond -f -d 0
+crond -f -l 1

@@ -1,20 +1,22 @@
 version: '3'
 
 services:
-  pingpong.test:
+  test:
     image: pingpong-test
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ./logs:/var/pingpong/logs:rw
+    environment:
+      - CRON_MINUTE=*
+      - MAX_TIME=30
+      - FOLLOW_LINKS=0
 
   pingpong:
     image: mrboots/pingpong
     volumes:
-      - ./URLS:/var/pingpong/URLS
+      # - ./URLS:/var/pingpong/URLS
       - ./logs:/var/pingpong/logs:rw
     environment:
-      - CRON_STRINGS=*/10 * * * * /bin/sh /scripts/fetch-urls.sh
-      - FOLLOW_LINKS=1
-      - MAX_TIME=30
+      - CRON_MINUTE=*/15
