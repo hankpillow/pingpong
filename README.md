@@ -12,7 +12,7 @@ The idea is to have a lightweight container using `crontab` and `jq` to fetch da
 
 You must create a list of urls and share it (via shared volumes) with the container.
 
-i.e: `echo http://reddit.com > URLS'
+i.e: `echo http://reddit.com > URLS`
 
 The `URLS` file is a text file containing one url per line.
 
