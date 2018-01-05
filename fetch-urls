@@ -51,7 +51,7 @@ while read -r url; do
 	# only urls starting with http(s):// will be tested.
 	if [[ $URL =~ ^https?:// ]]; then
 
-    printf "# $(date +%F_%T) $URL: "
+    printf "%s" "# $(date +%F_%T) $URL: "
 		RESULT=$(curl $URL -w "@$ROOT/curl-parse-result" $FOLLOW $LOGIN --insecure \
 			--max-time $CURL_TIMEOUT --compressed -I --silent -o /dev/null \
 			-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36')
