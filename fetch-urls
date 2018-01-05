@@ -2,8 +2,8 @@
 
 ROOT="${0%/*}"
 URL_LIST=$ROOT/URLS
-TARGET_ERROR=$ROOT/logs/samples.json
-TARGET_SUCCESS=$ROOT/logs/errors.json
+TARGET_ERROR=$ROOT/logs/errors.json
+TARGET_SUCCESS=$ROOT/logs/samples.json
 
 [[ $FOLLOW_LINKS == 0 ]] && FOLLOW="" || FOLLOW=" -L "
 [[ $MAX_TIME -gt 0 ]] && TIMEOUT="$MAX_TIME" || TIMEOUT=10
@@ -18,14 +18,14 @@ logerror () {
 
     LIST=$(cat $TARGET_ERROR | jq -r -c --argjson sample $ERROR '. |= . + [$sample] ')
     if [[ $? == 0 ]]; then
-      echo $LIST > $TARGET_ERROR
+      echo "$LIST" > "$TARGET_ERROR"
     else
-      echo $ERROR
-      echo "[pingpong] jq couldnt append the error on the list"
+      printf "# [pingpong] jq couldnt append the error on the list\n"
     fi
 
   else
-		echo "[pingpong] jq couldnt parse the error sample"
+		printf "# [pingpong] jq couldnt parse the error sample\n"
+    printf "# $ERROR\n"
 	fi
 }
 
@@ -34,11 +34,10 @@ if [[ ! -f $URL_LIST ]]; then
 	exit 1
 fi
 
-echo "# Pingpong will start fetching pages"
-echo "# * urls from: $URL_LIST"
-echo "# * samples at: $TARGET_SUCCESS"
-echo "# * erros at: $TARGET_ERROR"
-echo "# ----------------------------------"
+printf "# [Pingpong will start fetching pages]\n"
+printf "# * urls from: $URL_LIST\n"
+printf "# * samples at: $TARGET_SUCCESS\n"
+printf "# * errors at: $TARGET_ERROR\n"
 
 while read -r url; do
 
@@ -63,11 +62,11 @@ while read -r url; do
 
 			if [[ $? == 0 ]]; then
 
-        LIST=$(cat $TARGET_SUCCESS | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ' )
+        LIST=$(cat "$TARGET_SUCCESS" | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ' )
 				if [[ ! $? == 0 ]]; then
 					logerror "jq couldnt append the sample on the list" "e1"
         else
-          echo $LIST > $TARGET_SUCCESS
+          echo "$LIST" > "$TARGET_SUCCESS"
           printf "ok\n"
 				fi
 
@@ -84,5 +83,8 @@ while read -r url; do
 
 done < "$URL_LIST"
 
-echo "# done"
+printf "# [done]\n"
+printf "# -----\n"
+# echo "# total samples:$(cat $TARGET_SUCCESS | jq '. | length')"
+# echo "# total errors:$(cat $TARGET_ERROR | jq '. | length')"
 exit 0

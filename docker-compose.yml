@@ -16,7 +16,8 @@ services:
   pingpong:
     image: mrboots/pingpong
     volumes:
-      # - ./URLS:/var/pingpong/URLS
+      - ./URLS:/var/pingpong/URLS
       - ./logs:/var/pingpong/logs:rw
     environment:
       - CRON_MINUTE=*/15
+      - FOLLOW_LINKS=0
