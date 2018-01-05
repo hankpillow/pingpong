@@ -5,8 +5,7 @@ URL_LIST=$ROOT/URLS
 TARGET_ERROR=$ROOT/logs/errors.json
 TARGET_SUCCESS=$ROOT/logs/samples.json
 
-[[ $FOLLOW_LINKS == 0 ]] && FOLLOW="" || FOLLOW=" -L "
-[[ $MAX_TIME -gt 0 ]] && TIMEOUT="$MAX_TIME" || TIMEOUT=10
+[[ $CURL_FOLLOW_LINKS == 0 ]] && FOLLOW="" || FOLLOW=" -L "
 
 if [[ ! -f $TARGET_SUCCESS ]]; then echo "[]" > $TARGET_SUCCESS; fi
 if [[ ! -f $TARGET_ERROR ]]; then echo "[]" > $TARGET_ERROR; fi
@@ -16,16 +15,19 @@ logerror () {
 	ERROR=$(echo "{\"date\":\"$(date +%F_%T)\",\"url\":\"$1\",\"error_code\":\"$2\"}" | jq -r -c '.')
 	if [[ $? == 0 ]]; then
 
-    LIST=$(cat $TARGET_ERROR | jq -r -c --argjson sample $ERROR '. |= . + [$sample] ')
+    rm -f cmd.tmp
+    echo ". |= . + [\$error] | .[-$MAX_ERRORS:]" > cmd.tmp
+    LIST=$(cat $TARGET_ERROR | jq -r -c --argjson error $ERROR -f cmd.tmp)
+
     if [[ $? == 0 ]]; then
       echo "$LIST" > "$TARGET_ERROR"
     else
-      printf "# [pingpong] jq couldnt append the error on the list\n"
+      echo "# [pingpong] jq couldnt append the error on the list"
     fi
 
   else
-		printf "# [pingpong] jq couldnt parse the error sample\n"
-    printf "# $ERROR\n"
+		echo "# [pingpong] jq couldnt parse the error sample"
+    echo "# $ERROR"
 	fi
 }
 
@@ -34,10 +36,10 @@ if [[ ! -f $URL_LIST ]]; then
 	exit 1
 fi
 
-printf "# [Pingpong will start fetching pages]\n"
-printf "# * urls from: $URL_LIST\n"
-printf "# * samples at: $TARGET_SUCCESS\n"
-printf "# * errors at: $TARGET_ERROR\n"
+echo "# [Pingpong will start fetching pages]"
+echo "# * urls from: $URL_LIST"
+echo "# * samples at: $TARGET_SUCCESS"
+echo "# * errors at: $TARGET_ERROR"
 
 while read -r url; do
 
@@ -51,7 +53,7 @@ while read -r url; do
 
     printf "# $(date +%F_%T) $URL: "
 		RESULT=$(curl $URL -w "@$ROOT/curl-parse-result" $FOLLOW $LOGIN --insecure \
-			--max-time $TIMEOUT --compressed -I --silent -o /dev/null \
+			--max-time $CURL_TIMEOUT --compressed -I --silent -o /dev/null \
 			-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36')
     EXIT_CODE=$?
 
@@ -62,12 +64,15 @@ while read -r url; do
 
 			if [[ $? == 0 ]]; then
 
-        LIST=$(cat "$TARGET_SUCCESS" | jq -r -c --argjson sample $SAMPLE '. |= . + [$sample] ' )
+        rm -f cmd.tmp
+        echo ". |= . + [\$sample] | .[-$MAX_SAMPLES:]" > cmd.tmp
+        LIST=$(cat "$TARGET_SUCCESS" | jq -r -c --argjson sample $SAMPLE -f cmd.tmp)
+
 				if [[ ! $? == 0 ]]; then
 					logerror "jq couldnt append the sample on the list" "e1"
         else
           echo "$LIST" > "$TARGET_SUCCESS"
-          printf "ok\n"
+          echo "ok"
 				fi
 
 			else
@@ -76,15 +81,14 @@ while read -r url; do
 
 		else
 			logerror $URL "$EXIT_CODE"
-			printf "error\n"
+			echo "error"
 		fi
 
 	fi
 
 done < "$URL_LIST"
 
-printf "# [done]\n"
-printf "# -----\n"
-# echo "# total samples:$(cat $TARGET_SUCCESS | jq '. | length')"
-# echo "# total errors:$(cat $TARGET_ERROR | jq '. | length')"
+echo "# [done samples:$(cat $TARGET_SUCCESS | jq '. | length') errors:$(cat $TARGET_ERROR | jq '. | length')]"
+
+rm -f cmd.tmp
 exit 0

@@ -12,6 +12,8 @@ services:
       - CRON_MINUTE=*
       - MAX_TIME=30
       - FOLLOW_LINKS=0
+      - MAX_SAMPLES=5
+      - MAX_ERRORS=5
 
   pingpong:
     image: mrboots/pingpong

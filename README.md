@@ -132,7 +132,7 @@ Accordingly to the frequency and the amount of urls you have on your list the lo
 
 Check above the approx size a sample/error log can have and limit the amount of itens the log can keep.
 
-* *TBD* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
+* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
 
-* *TBD* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
+* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
 

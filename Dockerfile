@@ -24,6 +24,11 @@ ENV CRON_DAY_MONTH=*
 ENV CRON_MONTH=*
 ENV CRON_DAY_WEEK=*
 
-# CMD ["/usr/sbin/crond", "-f", "-d", "0"]
+ENV MAX_SAMPLES=100000
+ENV MAX_ERRORS=100000
+
+ENV CURL_FOLLOW_LINKS=0
+ENV CURL_TIMEOUT=10
+
 CMD ["/bin/bash", "/var/pingpong/start"]
 
