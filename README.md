@@ -65,6 +65,9 @@ All samples follow the format:
   "url_effective": "https://hub.docker.com/"
 }
 ```
+
+> This sample has ~= 635b.
+
 ## Log Error
 
 All logs will be saved at `/var/pingpong/logs/errors.json` (container's path)
@@ -81,6 +84,8 @@ All errors follow the format:
 }
 
 ```
+
+> This sample has ~= 85b.
 
 ----
 
@@ -121,10 +126,13 @@ All config must be provided via environment variable
 
 * `CRON_DAY_WEEK` - defautl `*`
 
+> check the [wiki](https://en.wikipedia.org/wiki/Cron) for more details or use the [crontab generator](https://crontab-generator.org/) to help you feeding these values.
+
+Accordingly to the frequency and the amount of urls you have on your list the logs can increase size very fast.
+
+Check above the approx size a sample/error log can have and limit the amount of itens the log can keep.
+
 * *TBD* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
 
 * *TBD* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
-
-> check the [wiki](https://en.wikipedia.org/wiki/Cron) for more details or use the [crontab generator](https://crontab-generator.org/) to help you feeding these values.
-
 
