@@ -2,9 +2,9 @@
 
 THIS IS A PERSONAL PROJECT!
 
-It is designed to cURL [information](https://curl.haxx.se/docs/manpage.html#-w) from a list of url
+It is designed to cURL [information](https://curl.haxx.se/docs/manpage.html#-w) from a file with urls in it.
 
-The idea is to have a lightweight container using `crontab` and `jq` to fetch and save as JSON
+The idea is to have a lightweight container using `crontab` and `jq` to fetch data and save them on JSON file.
 
 ----
 
@@ -121,9 +121,9 @@ All config must be provided via environment variable
 
 * `CRON_DAY_WEEK` - defautl `*`
 
-* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
+* *TBD* `MAX_SAMPLES` - default `100000` - the amount of itens inside the samples.log
 
-* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
+* *TBD* `MAX_ERRORS` - default `100000` - the amount of itens inside the errors.log
 
 > check the [wiki](https://en.wikipedia.org/wiki/Cron) for more details or use the [crontab generator](https://crontab-generator.org/) to help you feeding these values.
 
